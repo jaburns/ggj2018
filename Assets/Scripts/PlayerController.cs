@@ -34,6 +34,13 @@ public class PlayerController : MonoBehaviour
         return cellList;
     }
 
+    static Vector2 getMouseWorldPos()
+    {
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        var t = -ray.origin.z / ray.direction.normalized.z;
+        return ray.origin + ray.direction * t;
+    }
+
     void Update()
     {
         if (Input.GetKey(KeyCode.W)) cameraTarget += Vector2.up * cameraMoveSpeed * Time.deltaTime;
@@ -50,11 +57,11 @@ public class PlayerController : MonoBehaviour
             }
 
             selectoid = (Instantiate(selectoidPrefab, null) as GameObject).GetComponent<SelectoidController>();
-            selectionPtA = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            selectionPtA = getMouseWorldPos();
         }
 
         if (Input.GetMouseButton(0)) {
-            selectionPtB = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            selectionPtB = getMouseWorldPos();
             selectoid.transform.position = (selectionPtA + selectionPtB) / 2f;
             selectoid.SetSize((selectionPtB - selectionPtA).Abs());
 
@@ -114,7 +121,7 @@ public class PlayerController : MonoBehaviour
             cell.attraction.Clear();
             cell.attraction.AddRange(selectedCells);
             cell.attraction.Remove(cell);
-            cell.seekPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            cell.seekPoint = getMouseWorldPos();
         }
 
         foreach (var unselectedCell in unselectedCells) {
