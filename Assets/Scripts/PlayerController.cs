@@ -8,8 +8,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject cellPrefab;
     [SerializeField] GameObject selectoidPrefab;
 
+    [SerializeField] float cameraMoveSpeed;
+
     SelectoidController selectoid;
     Vector2 selectionPtA, selectionPtB;
+    Vector2 cameraTarget;
 
     List<CellController> cachedSelection = new List<CellController>();
     List<CellController> selectedCells = new List<CellController>();
@@ -18,6 +21,7 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         AllCells = generateCells();
+        cameraTarget = transform.position;
     }
 
     CellController[] generateCells()
@@ -32,10 +36,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.W)) transform.position += Vector3.up * .1f;
-        if (Input.GetKey(KeyCode.S)) transform.position += Vector3.down * .1f;
-        if (Input.GetKey(KeyCode.A)) transform.position += Vector3.left * .1f;
-        if (Input.GetKey(KeyCode.D)) transform.position += Vector3.right * .1f;
+        if (Input.GetKey(KeyCode.W)) cameraTarget += Vector2.up * cameraMoveSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.S)) cameraTarget += Vector2.down * cameraMoveSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.A)) cameraTarget += Vector2.left * cameraMoveSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.D)) cameraTarget += Vector2.right * cameraMoveSpeed * Time.deltaTime;
+
+        transform.position += (new Vector3(cameraTarget.x,cameraTarget.y,transform.position.z) - transform.position) / 10f;
 
         if (Input.GetMouseButtonDown(0)) {
             cachedSelection.Clear();
