@@ -9,6 +9,7 @@ public class CellController : MonoBehaviour
     public List<CellController> attraction = new List<CellController>();
     public bool selected { get; set; }
     public Vector3? seekPoint;
+    public ParticleSystem explosionEffect;
 
     MeshRenderer renderer;
     float blobboTimeScale;
@@ -16,7 +17,7 @@ public class CellController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        attraction = (PlayerController.AllCells.Clone() as CellController[]).ToList();
+        attraction = new List<CellController>(PlayerController.AllCells);
         attraction.Remove(this);
 
         renderer = GetComponentInChildren<MeshRenderer>();
@@ -61,5 +62,19 @@ public class CellController : MonoBehaviour
         if (seekPoint.HasValue) {
             rb.AddForce(10f * (seekPoint.Value - transform.position).normalized);
         }
+    }
+
+    bool dead = false;
+    public void Apoptosis()
+    {
+        if(dead)
+        {
+            return;
+        }
+
+        dead = true;
+        ParticleSystem explosion = GameObject.Instantiate(explosionEffect, gameObject.transform.position, Quaternion.Euler(180f, 0f, 0f));
+        GameObject.Destroy(explosion, 4f);
+        GameObject.Destroy(gameObject);
     }
 }

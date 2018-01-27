@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour 
 {
-    static public CellController[] AllCells { get; private set; }
+    static public List<CellController> AllCells { get; private set; }
 
     [SerializeField] GameObject cellPrefab;
     [SerializeField] GameObject selectoidPrefab;
@@ -24,14 +24,14 @@ public class PlayerController : MonoBehaviour
         cameraTarget = transform.position;
     }
 
-    CellController[] generateCells()
+    List<CellController> generateCells()
     {
         var cellList = new List<CellController>();
         for (int i = 0; i < 100; ++i) {
             var cellObj = Instantiate(cellPrefab, Vector3.right * Random.Range(-10f, 10f) + Vector3.up * Random.Range(-10f, 10f), Quaternion.identity) as GameObject;
             cellList.Add(cellObj.GetComponent<CellController>());
         }
-        return cellList.ToArray();
+        return cellList;
     }
 
     void Update()
@@ -69,6 +69,27 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonDown(1)) {
             triggerMove();
         }
+
+        if(Input.GetKey(KeyCode.R))
+        {
+            ApoptosisSelection();
+        }
+    }
+
+    void ApoptosisSelection()
+    {
+        foreach(CellController apoptosisCell in selectedCells)
+        {
+            foreach(CellController otherCell in AllCells)
+            {
+                otherCell.attraction.Remove(apoptosisCell);
+            }
+            apoptosisCell.Apoptosis();
+            AllCells.Remove(apoptosisCell);
+        }
+        cachedSelection.Clear();
+        selectedCells.Clear();
+        unselectedCells.Clear();
     }
 
     void updateSelection()
