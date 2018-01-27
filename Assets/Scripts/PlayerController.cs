@@ -8,12 +8,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject cellPrefab;
     [SerializeField] GameObject selectoidPrefab;
     [SerializeField] float cameraMoveSpeed;
+    [SerializeField] int maxCellAttractPairs;
 
     SelectoidController selectoid;
     Vector2 selectionPtA, selectionPtB;
 
     Vector2 cameraTarget;
-    bool manualCamera;
 
     List<CellController> cachedSelection = new List<CellController>();
     List<CellController> selectedCells = new List<CellController>();
@@ -87,16 +87,28 @@ public class PlayerController : MonoBehaviour
 
     void updateCameraPosition()
     {
-        if (Input.GetKey(KeyCode.W)) { cameraTarget += Vector2.up    * cameraMoveSpeed * Time.deltaTime; manualCamera = true; }
-        if (Input.GetKey(KeyCode.S)) { cameraTarget += Vector2.down  * cameraMoveSpeed * Time.deltaTime; manualCamera = true; }
-        if (Input.GetKey(KeyCode.A)) { cameraTarget += Vector2.left  * cameraMoveSpeed * Time.deltaTime; manualCamera = true; }
-        if (Input.GetKey(KeyCode.D)) { cameraTarget += Vector2.right * cameraMoveSpeed * Time.deltaTime; manualCamera = true; }
+        if (Input.GetKey(KeyCode.W)) cameraTarget += Vector2.up    * cameraMoveSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.S)) cameraTarget += Vector2.down  * cameraMoveSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.A)) cameraTarget += Vector2.left  * cameraMoveSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.D)) cameraTarget += Vector2.right * cameraMoveSpeed * Time.deltaTime;
 
         var speed = (new Vector3(cameraTarget.x, cameraTarget.y, transform.position.z) - transform.position) / 10f;
-        var MAX = 1f;
-        if (speed.sqrMagnitude > MAX * MAX) speed = speed.normalized * MAX;
+     // var MAX = 1f;
+     // if (speed.sqrMagnitude > MAX * MAX) speed = speed.normalized * MAX;
         transform.position += speed;
     }
+
+public static void Shuffle<T>(IList<T> list)  
+{  
+    int n = list.Count;  
+    while (n > 1) {  
+        n--;  
+        int k = (int)Random.Range(0f, list.Count - 1f);  
+        T value = list[k];  
+        list[k] = list[n];  
+        list[n] = value;  
+    }  
+}
 
     void ApoptosisSelection()
     {
@@ -136,6 +148,11 @@ public class PlayerController : MonoBehaviour
             cell.attraction.Clear();
             cell.attraction.AddRange(selectedCells);
             cell.attraction.Remove(cell);
+            Shuffle(cell.attraction);
+            if (cell.attraction.Count > maxCellAttractPairs) {
+                cell.attraction.RemoveRange(maxCellAttractPairs, cell.attraction.Count - maxCellAttractPairs);
+            }
+            cell.FindRotoboi();
         }
 
         foreach (var unselectedCell in unselectedCells) {
@@ -147,14 +164,13 @@ public class PlayerController : MonoBehaviour
 
     void updateSeekPointInSelectedCells(Vector2 pos)
     {
-        var averageSelectedPos = Vector2.zero;
+    //  var averageSelectedPos = Vector2.zero;
         
         foreach (var cell in selectedCells) {
             cell.seekPoint = pos;
-            averageSelectedPos += cell.transform.position.AsVector2();
+    //      averageSelectedPos += cell.transform.position.AsVector2();
         }
-        averageSelectedPos /= selectedCells.Count;
-
-        cameraTarget = averageSelectedPos;
+    //  averageSelectedPos /= selectedCells.Count;
+    //  cameraTarget = averageSelectedPos;
     }
 }
