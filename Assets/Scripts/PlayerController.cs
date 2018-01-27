@@ -7,12 +7,13 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] GameObject cellPrefab;
     [SerializeField] GameObject selectoidPrefab;
-
     [SerializeField] float cameraMoveSpeed;
 
     SelectoidController selectoid;
     Vector2 selectionPtA, selectionPtB;
+
     Vector2 cameraTarget;
+    bool manualCamera;
 
     List<CellController> cachedSelection = new List<CellController>();
     List<CellController> selectedCells = new List<CellController>();
@@ -43,12 +44,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.W)) cameraTarget += Vector2.up * cameraMoveSpeed * Time.deltaTime;
-        if (Input.GetKey(KeyCode.S)) cameraTarget += Vector2.down * cameraMoveSpeed * Time.deltaTime;
-        if (Input.GetKey(KeyCode.A)) cameraTarget += Vector2.left * cameraMoveSpeed * Time.deltaTime;
-        if (Input.GetKey(KeyCode.D)) cameraTarget += Vector2.right * cameraMoveSpeed * Time.deltaTime;
-
-        transform.position += (new Vector3(cameraTarget.x,cameraTarget.y,transform.position.z) - transform.position) / 10f;
+        var mousePos = getMouseWorldPos();
 
         if (Input.GetMouseButtonDown(0)) {
             cachedSelection.Clear();
@@ -57,11 +53,11 @@ public class PlayerController : MonoBehaviour
             }
 
             selectoid = (Instantiate(selectoidPrefab, null) as GameObject).GetComponent<SelectoidController>();
-            selectionPtA = getMouseWorldPos();
+            selectionPtA = mousePos;
         }
 
         if (Input.GetMouseButton(0)) {
-            selectionPtB = getMouseWorldPos();
+            selectionPtB = mousePos;
             selectoid.transform.position = (selectionPtA + selectionPtB) / 2f;
             selectoid.SetSize((selectionPtB - selectionPtA).Abs());
 
@@ -78,13 +74,28 @@ public class PlayerController : MonoBehaviour
         }
 
         if (Input.GetMouseButton(1)) {
-            updateSeekPointInSelectedCells();
+            updateSeekPointInSelectedCells(mousePos);
         }
 
         if(Input.GetKey(KeyCode.R))
         {
             ApoptosisSelection();
         }
+
+        updateCameraPosition();
+    }
+
+    void updateCameraPosition()
+    {
+        if (Input.GetKey(KeyCode.W)) { cameraTarget += Vector2.up    * cameraMoveSpeed * Time.deltaTime; manualCamera = true; }
+        if (Input.GetKey(KeyCode.S)) { cameraTarget += Vector2.down  * cameraMoveSpeed * Time.deltaTime; manualCamera = true; }
+        if (Input.GetKey(KeyCode.A)) { cameraTarget += Vector2.left  * cameraMoveSpeed * Time.deltaTime; manualCamera = true; }
+        if (Input.GetKey(KeyCode.D)) { cameraTarget += Vector2.right * cameraMoveSpeed * Time.deltaTime; manualCamera = true; }
+
+        var speed = (new Vector3(cameraTarget.x, cameraTarget.y, transform.position.z) - transform.position) / 10f;
+        var MAX = 1f;
+        if (speed.sqrMagnitude > MAX * MAX) speed = speed.normalized * MAX;
+        transform.position += speed;
     }
 
     void ApoptosisSelection()
@@ -134,10 +145,16 @@ public class PlayerController : MonoBehaviour
         }
 	}
 
-    void updateSeekPointInSelectedCells()
+    void updateSeekPointInSelectedCells(Vector2 pos)
     {
+        var averageSelectedPos = Vector2.zero;
+        
         foreach (var cell in selectedCells) {
-            cell.seekPoint = getMouseWorldPos();
+            cell.seekPoint = pos;
+            averageSelectedPos += cell.transform.position.AsVector2();
         }
+        averageSelectedPos /= selectedCells.Count;
+
+        cameraTarget = averageSelectedPos;
     }
 }
