@@ -74,7 +74,11 @@ public class PlayerController : MonoBehaviour
         }
 
         if (Input.GetMouseButtonDown(1)) {
-            triggerMove();
+            updateAttractionListInAllCells();
+        }
+
+        if (Input.GetMouseButton(1)) {
+            updateSeekPointInSelectedCells();
         }
 
         if(Input.GetKey(KeyCode.R))
@@ -115,13 +119,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void triggerMove() 
+    void updateAttractionListInAllCells() 
     {
         foreach (var cell in selectedCells) {
             cell.attraction.Clear();
             cell.attraction.AddRange(selectedCells);
             cell.attraction.Remove(cell);
-            cell.seekPoint = getMouseWorldPos();
         }
 
         foreach (var unselectedCell in unselectedCells) {
@@ -130,4 +133,11 @@ public class PlayerController : MonoBehaviour
             }
         }
 	}
+
+    void updateSeekPointInSelectedCells()
+    {
+        foreach (var cell in selectedCells) {
+            cell.seekPoint = getMouseWorldPos();
+        }
+    }
 }
