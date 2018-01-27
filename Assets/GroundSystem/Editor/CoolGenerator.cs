@@ -191,7 +191,7 @@ public class CoolGenerator : IGroundGenerator
         for (int i = 0; i < shape.edge.Length; ++i) {
             var pt = shape.edge[i];
             geometry.AddPoint(pt.x, pt.y);
-            verts.Add(pt.p.AsVector3(-pt.groundness*1.2f));
+            verts.Add(pt.p.AsVector3(-pt.groundness*_groundPull));
             uvs.Add(pt.p);
             uv2.Add(new Vector2(pt.groundness*pt.groundness, 0));
             geometry.AddSegment(i, (i+1)%shape.edge.Length);
@@ -200,7 +200,7 @@ public class CoolGenerator : IGroundGenerator
         for (int i = 0; i < shape.interior.Length; ++i) {
             var pt = shape.interior[i];
             geometry.AddPoint(pt.x, pt.y);
-            verts.Add(pt.p.AsVector3(-pt.groundness*1.2f + UnityEngine.Random.value*0.4f));
+            verts.Add(pt.p.AsVector3(-pt.groundness*_groundPull + UnityEngine.Random.value*0.4f));
             uvs.Add(pt.p);
             uv2.Add(new Vector2(pt.groundness*pt.groundness, 0));
         }

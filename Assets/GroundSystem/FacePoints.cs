@@ -49,13 +49,13 @@ namespace CoolGroundGenerator
                 var vexGroundCond = (groundNext && groundPrev)
                     || (groundNext && normPrev.x > 0 || groundPrev && normNext.x < 0);
 
-                edge.Add(new FacePoint(ptCurr, 0f)); //vexGroundCond ? 1f : 0f));
+                edge.Add(new FacePoint(ptCurr, 1f)); //vexGroundCond ? 1f : 0f));
 
                 var segs = (int)(dNext.magnitude / D);
                 for (int j = 1; j < segs; ++j) {
                     var newPt = Vector2.Lerp(ptCurr, ptNext, (float)j / segs);
                     newPt += normNext * UnityEngine.Random.value * 0.3f;
-                    edge.Add(new FacePoint(newPt, 0f)); // groundNext ? 1f : 0f));
+                    edge.Add(new FacePoint(newPt, 1f)); // groundNext ? 1f : 0f));
                 }
             }
 
@@ -79,15 +79,10 @@ namespace CoolGroundGenerator
                                 break;
                             }
 
-                            // TODO check that the closest edge point is within some angle
-                            // before assigning groundness to it.  Grass leaks out a bit
-                            // on interior corners.
-                            if (pt.y > p.y && pt.groundness > 0.99f) {
-                                var newGround = 1f / Mathf.Sqrt(d2);
-                                if (newGround > 1f) newGround = 1f;
-                                if (newGround > ground) {
-                                    ground = newGround;
-                                }
+                            var newGround = 1f / Mathf.Sqrt(d2);
+                            if (newGround > 1f) newGround = 1f;
+                            if (newGround > ground) {
+                                ground = newGround;
                             }
                         }
 
