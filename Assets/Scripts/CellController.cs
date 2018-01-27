@@ -4,65 +4,62 @@ using System.Collections.Generic;
 
 public class CellController : MonoBehaviour 
 {
-    int hoverFrames;
     Rigidbody2D rb;
 
     public List<CellController> attraction = new List<CellController>();
-    public bool Selected { get; set; }
+    public bool selected { get; set; }
     public Vector3? seekPoint;
+
+    MeshRenderer renderer;
+    float blobboTimeScale;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         attraction = (PlayerController.AllCells.Clone() as CellController[]).ToList();
         attraction.Remove(this);
-    }
 
-    public void NotifyMouseOver()
-    {
-        if (Input.GetMouseButton(0)) {
-            Selected = true;
-        } else {
-            hoverFrames = 3;
-        }
-    }
-
-    public void PurgeFromAttraction(List<CellController> cells) 
-    {
-        foreach (var cell in cells) {
-            attraction.Remove(cell);
-        }
+        renderer = GetComponentInChildren<MeshRenderer>();
+        blobboTimeScale = 5f * Random.Range(.7f, 1.3f);
     }
 
     void Update()
     {
-        if (hoverFrames > 0) {
-            hoverFrames--;
-        }
+        renderer.transform.localScale = new Vector3(
+            1f + 0.1f*Mathf.Sin(Time.time*blobboTimeScale),
+            1f + 0.1f*Mathf.Cos(Time.time*blobboTimeScale),
+            1f
+        );
 
-        if (Selected) {
-            GetComponentInChildren<Renderer>().material.color = Color.red;
-        } else if (hoverFrames > 0) {
-            GetComponentInChildren<Renderer>().material.color = Color.yellow;
+        if (selected) {
+            GetComponentInChildren<Renderer>().material.color = new Color(.2f,.2f,.2f);
         } else {
-            GetComponentInChildren<Renderer>().material.color = Color.white;
+            GetComponentInChildren<Renderer>().material.color = new Color(.1f,.1f,.1f);
         }
     }
 
-    static Vector2 forceBetweenCells(CellController thisCell, CellController otherCell)
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        var ds = otherCell.transform.position - thisCell.transform.position;
-        return ds.normalized / ds.magnitude;
+        var other = collision.collider.GetComponent<CellController>();
+        if (other != null) {
+            if (!other.attraction.Contains(this)) {
+                other.attraction.Add(this);
+            }
+            if (!attraction.Contains(other)) {
+                attraction.Contains(other);
+            }
+        }
     }
 
     void FixedUpdate()
     {
         foreach (var cell in attraction) {
-            rb.AddForce(forceBetweenCells(this, cell));
+            var ds = cell.transform.position - transform.position;
+            rb.AddForce(0.5f * ds.normalized / ds.magnitude);
         }
 
         if (seekPoint.HasValue) {
-            rb.AddForce(1f * (seekPoint.Value - transform.position).normalized);
+            rb.AddForce(10f * (seekPoint.Value - transform.position).normalized);
         }
     }
 }

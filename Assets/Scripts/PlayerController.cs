@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Linq;
 using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour 
@@ -7,6 +6,14 @@ public class PlayerController : MonoBehaviour
     static public CellController[] AllCells { get; private set; }
 
     [SerializeField] GameObject cellPrefab;
+    [SerializeField] GameObject selectoidPrefab;
+
+    SelectoidController selectoid;
+    Vector2 selectionPtA, selectionPtB;
+
+    List<CellController> cachedSelection = new List<CellController>();
+    List<CellController> selectedCells = new List<CellController>();
+    List<CellController> unselectedCells = new List<CellController>();
 
     void Awake()
     {
@@ -17,50 +24,75 @@ public class PlayerController : MonoBehaviour
     {
         var cellList = new List<CellController>();
         for (int i = 0; i < 100; ++i) {
-            var cellObj = Instantiate(cellPrefab, transform.position + Vector3.right * Random.Range(-10f, 10f) + Vector3.up * Random.Range(-10f, 10f), Quaternion.identity) as GameObject;
+            var cellObj = Instantiate(cellPrefab, Vector3.right * Random.Range(-10f, 10f) + Vector3.up * Random.Range(-10f, 10f), Quaternion.identity) as GameObject;
             cellList.Add(cellObj.GetComponent<CellController>());
         }
         return cellList.ToArray();
     }
 
-    void Update() 
+    void Update()
     {
-        bool hitCell = false;
+        if (Input.GetKey(KeyCode.W)) transform.position += Vector3.up * .1f;
+        if (Input.GetKey(KeyCode.S)) transform.position += Vector3.down * .1f;
+        if (Input.GetKey(KeyCode.A)) transform.position += Vector3.left * .1f;
+        if (Input.GetKey(KeyCode.D)) transform.position += Vector3.right * .1f;
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 0f, 1 << LayerMask.NameToLayer("MouseInteract"));
-        foreach (var hit in hits) {
-            if (hit.collider != null) {
-                var cell = hit.collider.transform.parent.GetComponent<CellController>();
-                if (cell != null) {
-                    hitCell = true;
-                    cell.NotifyMouseOver();
-                }
+        if (Input.GetMouseButtonDown(0)) {
+            cachedSelection.Clear();
+            if (Input.GetKey(KeyCode.LeftShift)) {
+                cachedSelection.AddRange(selectedCells);
             }
+
+            selectoid = (Instantiate(selectoidPrefab, null) as GameObject).GetComponent<SelectoidController>();
+            selectionPtA = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
 
-        var selectedCells = new List<CellController>();
-        var unselectedCells = new List<CellController>();
+        if (Input.GetMouseButton(0)) {
+            selectionPtB = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            selectoid.transform.position = (selectionPtA + selectionPtB) / 2f;
+            selectoid.SetSize((selectionPtB - selectionPtA).Abs());
 
-        if (Input.GetMouseButtonDown(0) && !hitCell) {
-            foreach (var cell in AllCells) {
-                if (cell.Selected) selectedCells.Add(cell);
-                else unselectedCells.Add(cell);
-            }
+            updateSelection();
+        }
 
-            foreach (var cell in selectedCells) {
-                cell.attraction.Clear();
-                cell.attraction.AddRange(selectedCells);
-                cell.attraction.Remove(cell);
+        if (Input.GetMouseButtonUp(0)) {
+            Destroy(selectoid.gameObject);
+            selectoid = null;
+        }
 
-                cell.Selected = false;
+        if (Input.GetMouseButtonDown(1)) {
+            triggerMove();
+        }
+    }
 
-                cell.seekPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            }
+    void updateSelection()
+    {
+        var rekt = new Rect(VectorExt.Min(selectionPtA, selectionPtB), (selectionPtB - selectionPtA).Abs());
+        foreach (var cell in AllCells) {
+            cell.selected = cachedSelection.Contains(cell) || rekt.Contains(cell.transform.position);
+        }
 
-            foreach (var cell in unselectedCells) {
-                cell.PurgeFromAttraction(selectedCells);
+        selectedCells.Clear();
+        unselectedCells.Clear();
 
-                cell.seekPoint = null;
+        foreach (var cell in AllCells) {
+            if (cell.selected) selectedCells.Add(cell);
+            else unselectedCells.Add(cell);
+        }
+    }
+
+    void triggerMove() 
+    {
+        foreach (var cell in selectedCells) {
+            cell.attraction.Clear();
+            cell.attraction.AddRange(selectedCells);
+            cell.attraction.Remove(cell);
+            cell.seekPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
+
+        foreach (var unselectedCell in unselectedCells) {
+            foreach (var selectedCell in selectedCells) {
+                unselectedCell.attraction.Remove(selectedCell);
             }
         }
 	}
