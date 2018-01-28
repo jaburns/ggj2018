@@ -48,9 +48,6 @@ public class CellController : MonoBehaviour
 
         ogMaterial = renderer.sharedMaterial;
 
-        circleCollider = GetComponent<CircleCollider2D>();
-        radius = circleCollider.radius;
-
         animRotation = Quaternion.Euler(Random.Range(rotationAmountBase, rotationAmountBase + rotationAmount) * Random.onUnitSphere);
 
         seekPoint = transform.position;
@@ -181,6 +178,13 @@ public class CellController : MonoBehaviour
             if(distance < damageDistance)
             {
                 ec.TakeDamage(damage + damage/(distance + damageModifier));
+            }
+        }
+
+        if (OrganController.Instance != null) {
+            float distance = Vector3.Distance(myPosition, OrganController.Instance.transform.position);
+            if(distance < damageDistance) {
+                OrganController.Instance.GetRekt();
             }
         }
 

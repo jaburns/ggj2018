@@ -63,6 +63,12 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         while (AllCells.Remove(null)) { }
+
+        if (AllCells.Count < 1) {
+            FadeCameraController.Lose();
+            Destroy(this);
+            return;
+        }
         
         var mousePos = getMouseWorldPos();
 
