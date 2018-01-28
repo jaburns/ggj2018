@@ -64,6 +64,8 @@ public class CellController : MonoBehaviour
 
     public void FindRotoboi()
     {
+        while (attraction.Remove(null)) { }
+
         rotoBoiSign = Random.value > .5f ? 1f : -1f;
 
         var bestSqrDist = float.MaxValue;
@@ -78,6 +80,8 @@ public class CellController : MonoBehaviour
 
     void FixedUpdate()
     {
+        while (attraction.Remove(null)) { }
+
         foreach (var cell in attraction) {
             var ds = cell.transform.position - transform.position;
             var dsMag = ds.magnitude;
@@ -89,7 +93,6 @@ public class CellController : MonoBehaviour
 
             rb.AddForce((attraction - repulsion) *  dsNorm);
         }
-
 
         var seekVec = seekPoint - transform.position;
         var seekForce = 1f * seekVec.normalized * Mathf.Clamp(seekVec.magnitude, 1f, 10f);

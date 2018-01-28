@@ -44,6 +44,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        while (AllCells.Remove(null)) { }
+        
         var mousePos = getMouseWorldPos();
 
         if (Input.GetMouseButtonDown(0)) {
