@@ -31,9 +31,12 @@ public class PlayerController : MonoBehaviour
 
     List<CellController> generateCells()
     {
+        Debug.LogError("Generating Cells");
         var cellList = new List<CellController>();
-        for (int i = 0; i < 100; ++i) {
+        for (int i = 0; i < 100; ++i)
+        {
             var cellObj = Instantiate(cellPrefab, Vector3.right * Random.Range(-5f, 5f) + Vector3.up * Random.Range(-5f, 5f), Quaternion.identity) as GameObject;
+            Debug.LogError("Cell Object: " + cellObj);
             cellList.Add(cellObj.GetComponent<CellController>());
         }
         return cellList;

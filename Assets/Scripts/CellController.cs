@@ -26,6 +26,7 @@ public class CellController : MonoBehaviour
     public float powerUpAmount = 50f;
     public float power = 0f;
     public float mitosisPowerThreshold = 100f;
+    public float health = 100f;
 
     MeshRenderer renderer;
     float blobboTimeScale;
@@ -58,6 +59,12 @@ public class CellController : MonoBehaviour
 
     void Update()
     {
+        if(health < 50f)
+        {
+            ExplosionEffect();
+            return;
+        }
+
         float powerModifier = 1f + power / 100f;
 
         renderer.transform.rotation *= animRotation;
@@ -173,6 +180,11 @@ public class CellController : MonoBehaviour
             }
         }
 
+        ExplosionEffect();
+    }
+
+    private void ExplosionEffect()
+    {
         ParticleSystem explosion = GameObject.Instantiate(apoptosisEffect, gameObject.transform.position, Quaternion.Euler(180f, 0f, 0f));
         GameObject.Destroy(explosion, 4f);
         GameObject.Destroy(gameObject);

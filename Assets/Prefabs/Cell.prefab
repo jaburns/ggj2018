@@ -265,3 +265,4 @@ MonoBehaviour:
   powerUpAmount: 50
   power: 0
   mitosisPowerThreshold: 100
+  health: 100
