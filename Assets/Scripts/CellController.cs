@@ -124,6 +124,7 @@ public class CellController : MonoBehaviour
                 cc.GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.blue);
 
                 PlayerController.AllCells.Add(cc);
+                PlayerController.shouldUpdateSelectedCells = true;
             }
         }
     }
