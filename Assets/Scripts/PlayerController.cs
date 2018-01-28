@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour
             updateSeekPointInSelectedCells(mousePos);
         }
 
-        if(Input.GetKey(KeyCode.R))
+        if(Input.GetKey(KeyCode.Space))
         {
             ApoptosisSelection();
         }
