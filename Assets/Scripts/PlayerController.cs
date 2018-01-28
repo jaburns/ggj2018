@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     {
         var cellList = new List<CellController>();
         for (int i = 0; i < 100; ++i) {
-            var cellObj = Instantiate(cellPrefab, Vector3.right * Random.Range(-10f, 10f) + Vector3.up * Random.Range(-10f, 10f), Quaternion.identity) as GameObject;
+            var cellObj = Instantiate(cellPrefab, Vector3.right * Random.Range(-5f, 5f) + Vector3.up * Random.Range(-5f, 5f), Quaternion.identity) as GameObject;
             cellList.Add(cellObj.GetComponent<CellController>());
         }
         return cellList;
