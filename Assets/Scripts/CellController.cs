@@ -1,15 +1,23 @@
 ﻿using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEngine.Profiling;
 
 public class CellController : MonoBehaviour 
 {
     Rigidbody2D rb;
 
-    public List<CellController> attraction = new List<CellController>();
+    [SerializeField] AnimationCurve attractionCurve;
+    [SerializeField] float attractionScale;
+    [SerializeField] AnimationCurve repulsionCurve;
+    [SerializeField] float repulsionScale;
+    [SerializeField] float churn = 1f;
+    public ParticleSystem explosionEffect;
+
+    public List<CellController> attraction { get; set; }
     public bool selected { get; set; }
-    public Vector3? seekPoint;
-    public ParticleSystem apoptosisEffect;
+    public Vector3 seekPoint { get; set; }
+    public ParticleSystem explosionEffect;
     public float damageDistance = 3f;
     public float damage = 50f;
     public float damageModifier = 2f;
@@ -19,6 +27,8 @@ public class CellController : MonoBehaviour
 
     MeshRenderer renderer;
     float blobboTimeScale;
+    GameObject rotoBoi;
+    float rotoBoiSign;
 
     CircleCollider2D circleCollider;
     private float radius;
@@ -28,6 +38,7 @@ public class CellController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         attraction = new List<CellController>(PlayerController.AllCells);
         attraction.Remove(this);
+        FindRotoboi();
 
         renderer = GetComponentInChildren<MeshRenderer>();
         blobboTimeScale = 5f * Random.Range(.7f, 1.3f);
@@ -89,15 +100,45 @@ public class CellController : MonoBehaviour
         }
     }
 
+    public void FindRotoboi()
+    {
+        while (attraction.Remove(null)) { }
+
+        rotoBoiSign = Random.value > .5f ? 1f : -1f;
+
+        var bestSqrDist = float.MaxValue;
+        foreach (var cell in attraction) {
+            var sqrDist = (cell.transform.position - transform.position).sqrMagnitude;
+            if (sqrDist < bestSqrDist) {
+                bestSqrDist = sqrDist;
+                rotoBoi = cell.gameObject;
+            }
+        }
+    }
+
     void FixedUpdate()
     {
+        while (attraction.Remove(null)) { }
+
         foreach (var cell in attraction) {
             var ds = cell.transform.position - transform.position;
-            rb.AddForce(0.5f * ds.normalized / ds.magnitude);
+            var dsMag = ds.magnitude;
+            var dsNorm = ds / dsMag;
+            var normalizedDist = Mathf.Clamp(dsMag, 0f, 10f) / 10f;
+
+            var attraction = attractionCurve.Evaluate(normalizedDist) * attractionScale;
+            var repulsion = repulsionCurve.Evaluate(normalizedDist) * repulsionScale;
+
+            rb.AddForce((attraction - repulsion) *  dsNorm);
         }
 
-        if (seekPoint.HasValue) {
-            rb.AddForce(10f * (seekPoint.Value - transform.position).normalized);
+        var seekVec = seekPoint - transform.position;
+        var seekForce = 1f * seekVec.normalized * Mathf.Clamp(seekVec.magnitude, 1f, 10f);
+        rb.AddForce(seekForce);
+
+        if (rotoBoi != null) {
+            var rotoVec = rotoBoiSign * Vector3.Cross(transform.position - rotoBoi.transform.position, Vector3.forward).normalized;
+            rb.AddForce(rotoVec * churn);
         }
     }
 
