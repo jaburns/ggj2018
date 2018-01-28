@@ -21,22 +21,33 @@ public class PlayerController : MonoBehaviour
     List<CellController> selectedCells = new List<CellController>();
     List<CellController> unselectedCells = new List<CellController>();
 
+    CameraBounds bounds;
+
     void Awake()
     {
         AllCells = generateCells();
         cameraTarget = transform.position;
 
         EnemyCells = GameObject.FindObjectsOfType<EnemyController>().ToList();
+
+        bounds = FindObjectOfType<CameraBounds>();
     }
 
     List<CellController> generateCells()
     {
-        Debug.LogError("Generating Cells");
+        int count = 100;
+        var basePos = transform.position.WithZ(0);
+        var radius = 5f;
+        var spawner = FindObjectOfType<CellSpawner>();
+        if (spawner != null) {
+            count = spawner.CellCount;
+            radius = spawner.Radius;
+            basePos = spawner.transform.position.WithZ(0);
+        }
+
         var cellList = new List<CellController>();
-        for (int i = 0; i < 100; ++i)
-        {
-            var cellObj = Instantiate(cellPrefab, Vector3.right * Random.Range(-5f, 5f) + Vector3.up * Random.Range(-5f, 5f), Quaternion.identity) as GameObject;
-            Debug.LogError("Cell Object: " + cellObj);
+        for (int i = 0; i < count; ++i) {
+            var cellObj = Instantiate(cellPrefab, basePos + Vector3.right * Random.Range(-radius, radius) + Vector3.up * Random.Range(-radius, radius), Quaternion.identity) as GameObject;
             cellList.Add(cellObj.GetComponent<CellController>());
         }
         return cellList;
@@ -103,10 +114,18 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.D)) cameraTarget += Vector2.right * cameraMoveSpeed * Time.deltaTime;
         if (Input.GetKey(KeyCode.LeftShift)) cameraMoveSpeed /= 2;
 
+        if (bounds != null) {
+            if (cameraTarget.x < bounds.bounds.xMin) cameraTarget = cameraTarget.WithX(bounds.bounds.xMin);
+            if (cameraTarget.x > bounds.bounds.xMax) cameraTarget = cameraTarget.WithX(bounds.bounds.xMax);
+            if (cameraTarget.y < bounds.bounds.yMin) cameraTarget = cameraTarget.WithY(bounds.bounds.yMin);
+            if (cameraTarget.y > bounds.bounds.yMax) cameraTarget = cameraTarget.WithY(bounds.bounds.yMax);
+        }
+
         var speed = (new Vector3(cameraTarget.x, cameraTarget.y, transform.position.z) - transform.position) / 10f;
      // var MAX = 1f;
      // if (speed.sqrMagnitude > MAX * MAX) speed = speed.normalized * MAX;
         transform.position += speed;
+
     }
 
 public static void Shuffle<T>(IList<T> list)  

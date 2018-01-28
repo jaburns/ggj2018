@@ -48,7 +48,12 @@ public class CellController : MonoBehaviour
 
         ogMaterial = renderer.sharedMaterial;
 
-        animRotation = Quaternion.Euler(Random.RandomRange(rotationAmountBase, rotationAmountBase + rotationAmount) * Random.onUnitSphere);
+        circleCollider = GetComponent<CircleCollider2D>();
+        radius = circleCollider.radius;
+
+        animRotation = Quaternion.Euler(Random.Range(rotationAmountBase, rotationAmountBase + rotationAmount) * Random.onUnitSphere);
+
+        seekPoint = transform.position;
     }
 
     void Update()
