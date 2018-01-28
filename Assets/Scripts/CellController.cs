@@ -12,6 +12,7 @@ public class CellController : MonoBehaviour
     [SerializeField] AnimationCurve repulsionCurve;
     [SerializeField] float repulsionScale;
     [SerializeField] float churn = 1f;
+    [SerializeField] Material selectedMaterial;
 
     public List<CellController> attraction { get; set; }
     public bool selected { get; set; }
@@ -29,6 +30,8 @@ public class CellController : MonoBehaviour
     GameObject rotoBoi;
     float rotoBoiSign;
 
+    Material ogMaterial;
+
     CircleCollider2D circleCollider;
     private float radius;
 
@@ -41,6 +44,8 @@ public class CellController : MonoBehaviour
 
         renderer = GetComponentInChildren<MeshRenderer>();
         blobboTimeScale = 5f * Random.Range(.7f, 1.3f);
+
+        ogMaterial = renderer.sharedMaterial;
 
         circleCollider = GetComponent<CircleCollider2D>();
         radius = circleCollider.radius;
@@ -56,11 +61,11 @@ public class CellController : MonoBehaviour
             powerModifier
         );
 
-        //if (selected) {
-        //    GetComponentInChildren<Renderer>().material.color = new Color(.2f,.2f,.2f);
-        //} else {
-        //    GetComponentInChildren<Renderer>().material.color = new Color(.1f,.1f,.1f);
-        //}
+        if (selected) {
+            renderer.sharedMaterial = selectedMaterial;
+        }else{
+            renderer.sharedMaterial = ogMaterial;
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision)

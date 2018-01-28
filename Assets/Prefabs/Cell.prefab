@@ -254,6 +254,7 @@ MonoBehaviour:
     m_RotationOrder: 0
   repulsionScale: 2
   churn: 1
+  selectedMaterial: {fileID: 2100000, guid: 544d0838f7c320243b2b9d62d14444e1, type: 2}
   apoptosisEffect: {fileID: 198195072401398202, guid: 540c0ea65eb14de46aa5a1478d5a4f3a,
     type: 2}
   damageDistance: 3
