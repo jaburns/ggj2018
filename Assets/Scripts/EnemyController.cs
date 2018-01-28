@@ -21,6 +21,8 @@ public class EnemyController : MonoBehaviour {
     public AnimationCurve animationCurve;
     public ParticleSystem attackParticles;
 
+    public GameObject doorToOpen;
+
     public void TakeDamage(float damage)
     {
         CurrentHealth -= damage;
@@ -39,6 +41,9 @@ public class EnemyController : MonoBehaviour {
         collider.radius = collider.radius * Difficulty;
 
         CurrentHealth = TotalHealth = Difficulty * HealthModifier;
+
+        Audio.SetLoopPlaying("menuloop", false);
+        Audio.SetLoopPlaying("levelloop", true);
     }
 
     private void Update()
@@ -122,6 +127,11 @@ public class EnemyController : MonoBehaviour {
         if(dead)
         {
             return;
+        }
+
+        if (doorToOpen != null) {
+            var p = FindObjectOfType<PlayerController>();
+            p.StartCoroutine(p.TriggerCameraPanAndOpen(doorToOpen));
         }
 
         dead = true;

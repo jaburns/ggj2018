@@ -1,0 +1,144 @@
+fileFormatVersion: 2
+guid: 43e02bf9536ee4d4c851c729765e677f
+timeCreated: 1517174832
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Donut01
+    100002: Donut02
+    100004: Donut03
+    100006: Donut04
+    100008: Donut05
+    100010: Donut06
+    100012: //RootNode
+    100014: Rim
+    100016: Rim02
+    100018: Sphere01
+    100020: Sphere02
+    100022: Sphere03
+    100024: Tube01
+    100026: veia
+    400000: Donut01
+    400002: Donut02
+    400004: Donut03
+    400006: Donut04
+    400008: Donut05
+    400010: Donut06
+    400012: //RootNode
+    400014: Rim
+    400016: Rim02
+    400018: Sphere01
+    400020: Sphere02
+    400022: Sphere03
+    400024: Tube01
+    400026: veia
+    2300000: Donut01
+    2300002: Donut02
+    2300004: Donut03
+    2300006: Donut04
+    2300008: Donut05
+    2300010: Donut06
+    2300012: Rim
+    2300014: Rim02
+    2300016: Sphere01
+    2300018: Sphere02
+    2300020: Sphere03
+    2300022: Tube01
+    2300024: veia
+    3300000: Donut01
+    3300002: Donut02
+    3300004: Donut03
+    3300006: Donut04
+    3300008: Donut05
+    3300010: Donut06
+    3300012: Rim
+    3300014: Rim02
+    3300016: Sphere01
+    3300018: Sphere02
+    3300020: Sphere03
+    3300022: Tube01
+    3300024: veia
+    4300000: Donut01
+    4300002: Donut02
+    4300004: Donut03
+    4300006: Donut04
+    4300008: Donut05
+    4300010: Donut06
+    4300012: Rim
+    4300014: Rim02
+    4300016: Sphere01
+    4300018: Sphere02
+    4300020: Sphere03
+    4300022: Tube01
+    4300024: veia
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

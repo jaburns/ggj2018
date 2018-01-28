@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 
 public class PlayerController : MonoBehaviour 
@@ -153,6 +154,38 @@ public static void Shuffle<T>(IList<T> list)
         list[n] = value;  
     }  
 }
+
+
+    public IEnumerator TriggerCameraPanAndOpen(GameObject targetObject)
+    {
+        yield return new WaitForSeconds(.5f);
+
+        Time.timeScale = 0f;
+
+        var ogPos = transform.position;
+        var deltaPos = targetObject.transform.position - transform.position;
+        deltaPos.z = 0;
+
+        for (float t = 0f; t <= 1f; t += Time.unscaledDeltaTime) {
+            var eased = 1f - (1f-t)*(1f-t);
+            transform.position = ogPos + deltaPos * eased;
+            yield return new WaitForEndOfFrame();
+        }
+
+        Time.timeScale = 1f;
+        Destroy(targetObject);
+        transform.position = ogPos + deltaPos;
+        yield return new WaitForEndOfFrame();
+        transform.position = ogPos + deltaPos;
+        Time.timeScale = 0f;
+
+        for (float t = 0f; t <= 1f; t += Time.unscaledDeltaTime) {
+            transform.position = ogPos + deltaPos;
+            yield return new WaitForEndOfFrame();
+        }
+
+        Time.timeScale = 1f;
+    }
 
     void ApoptosisSelection()
     {
