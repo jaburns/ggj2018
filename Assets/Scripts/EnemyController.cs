@@ -12,8 +12,8 @@ public class EnemyController : MonoBehaviour {
     public float Difficulty = 1f;
     public float AggroDistModifier = 10f;
     public float SpeedModifier = 10f;
-    public float DmgDistModifier = 1.5f;
-    public float HealthModifier = 100;
+    public float DmgDistModifier = 4f;
+    public float HealthModifier = 200;
 
     private float TotalHealth;
     private float CurrentHealth;
