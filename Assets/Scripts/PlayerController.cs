@@ -201,6 +201,8 @@ public static void Shuffle<T>(IList<T> list)
         cachedSelection.Clear();
         selectedCells.Clear();
         unselectedCells.Clear();
+
+        Audio.Play("squishSmall");
     }
 
     void updateSelection()
