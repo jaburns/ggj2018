@@ -3,27 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour {
-
-    public float Health = 200;
-    private float TotalHealth;
-
     public GameObject[] CellGuts;
     public ParticleSystem deathEffect;
     private Rigidbody2D rigidBody;
 
     private CellController seekCell;
 
-    public float AggroDistance = 20f;
-    public float SeekModifier = 20f;
+    public float Difficulty = 1f;
+    public float AggroDistModifier = 10f;
+    public float SpeedModifier = 10f;
+    public float DmgDistModifier = 1f;
+    public float HealthModifier = 100;
 
-    public float DamageDistance = 3f;
+    private float TotalHealth;
+    private float CurrentHealth;
 
     public AnimationCurve animationCurve;
     public ParticleSystem attackParticles;
 
     public void TakeDamage(float damage)
     {
-        Health -= damage;
+        CurrentHealth -= damage;
     }
 
     float blobboTimeScale;
@@ -31,14 +31,19 @@ public class EnemyController : MonoBehaviour {
     private void Start()
     {
         blobboTimeScale = 5f * Random.Range(.7f, 1.3f);
-        renderer = GetComponent<MeshRenderer>();
-        TotalHealth = Health;
+        renderer = GetComponentInChildren<MeshRenderer>();
+        TotalHealth = HealthModifier;
         rigidBody = GetComponent<Rigidbody2D>();
+
+        CircleCollider2D collider = GetComponent<CircleCollider2D>();
+        collider.radius = collider.radius * Difficulty;
+
+        CurrentHealth = TotalHealth = Difficulty * HealthModifier;
     }
 
     private void Update()
     {
-        if (Health < 50f)
+        if (CurrentHealth < 50f)
         {
             DestroyCell();
         }
@@ -55,13 +60,13 @@ public class EnemyController : MonoBehaviour {
             }
         }
 
-        float healthModifier = 100f / (100f + Health);
-        float scaleModifier = Health / 100f + animationModifier;
-        float transArgument = Time.time * (blobboTimeScale + healthModifier);
+        float damageIndication = 1f - CurrentHealth / TotalHealth;
+        float scaleModifier = CurrentHealth / 100f + animationModifier;
+        float transArgument = Time.time * (blobboTimeScale + damageIndication);
 
         renderer.transform.localScale = new Vector3(
-           scaleModifier + Mathf.Sin(transArgument) * healthModifier,
-           scaleModifier + Mathf.Cos(transArgument) * healthModifier,
+           scaleModifier + Mathf.Sin(transArgument) * damageIndication,
+           scaleModifier + Mathf.Cos(transArgument) * damageIndication,
            scaleModifier);
 
         SeekClosestCell();
@@ -85,13 +90,14 @@ public class EnemyController : MonoBehaviour {
         foreach(CellController cell in PlayerController.AllCells)
         {
             float distance = Vector3.Distance(myPos, cell.transform.position);
-            if(distance < DamageDistance)
+            if(distance < DmgDistModifier * Difficulty)
             {
                 cell.health -= 50f;
             }
         }
 
         ParticleSystem attack = GameObject.Instantiate(attackParticles, gameObject.transform.position, Quaternion.Euler(180, 0, 0));
+        attack.transform.localScale = new Vector3(1, 1, 1) * Difficulty / 2f;
         GameObject.Destroy(attack, 3f);
         startAttackAnimation = false;
     }
@@ -100,12 +106,7 @@ public class EnemyController : MonoBehaviour {
     {
         if (seekCell)
         {
-            Vector3 direction = (seekCell.transform.position - transform.position) * SeekModifier;
-
-            if(direction.sqrMagnitude < 12f)
-            {
-                direction *= 2;
-            }
+            Vector3 direction = (seekCell.transform.position - transform.position).normalized * SpeedModifier * Difficulty;
 
             rigidBody.AddForce(direction, ForceMode2D.Impulse);
         }
@@ -140,12 +141,12 @@ public class EnemyController : MonoBehaviour {
 
     bool aggroed = false;
     float timeToNextCheck = 0f;
-    const float SEEK_CHECK_FREQUENCY = 10f;
+    const float SEEK_CHECK_FREQUENCY = 2f;
     public void SeekClosestCell()
     {
         if(Time.realtimeSinceStartup > timeToNextCheck)
         {
-            float distance = aggroed ? float.PositiveInfinity : AggroDistance;
+            float distance = aggroed ? float.PositiveInfinity : AggroDistModifier * Difficulty;
             CellController closestCell = null;
 
             foreach(CellController cell in PlayerController.AllCells)
