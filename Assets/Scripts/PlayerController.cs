@@ -93,10 +93,12 @@ public class PlayerController : MonoBehaviour
 
     void updateCameraPosition()
     {
+        if (Input.GetKey(KeyCode.LeftShift)) cameraMoveSpeed *= 2;
         if (Input.GetKey(KeyCode.W)) cameraTarget += Vector2.up    * cameraMoveSpeed * Time.deltaTime;
         if (Input.GetKey(KeyCode.S)) cameraTarget += Vector2.down  * cameraMoveSpeed * Time.deltaTime;
         if (Input.GetKey(KeyCode.A)) cameraTarget += Vector2.left  * cameraMoveSpeed * Time.deltaTime;
         if (Input.GetKey(KeyCode.D)) cameraTarget += Vector2.right * cameraMoveSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.LeftShift)) cameraMoveSpeed /= 2;
 
         var speed = (new Vector3(cameraTarget.x, cameraTarget.y, transform.position.z) - transform.position) / 10f;
      // var MAX = 1f;
