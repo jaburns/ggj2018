@@ -60,6 +60,8 @@ public class EnemyController : MonoBehaviour {
             go.GetComponent<Rigidbody2D>().AddForce(Quaternion.Euler(i, 0, i) * Vector3.one * 10f, ForceMode2D.Impulse);
         }
 
+        PlayerController.EnemyCells.Remove(this);
+
         GameObject.Destroy(explosion, 4f);
         GameObject.Destroy(gameObject);
     }
