@@ -205,18 +205,54 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attractionCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 2
+      time: 0.005015559
+      value: -0.0015223324
+      inSlope: 2.4563997
+      outSlope: 2.4563997
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.34366736
+      value: 0.6135834
+      inSlope: -0.06867834
+      outSlope: -0.06867834
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.6964152
+      value: 0.20048454
+      inSlope: -0.004072493
+      outSlope: -0.004072493
+      tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
-  attractionScale: 0
+    m_RotationOrder: 0
+  attractionScale: 1
   repulsionCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 2
+      time: 0.002193451
+      value: 0.99780273
+      inSlope: -2.8701801
+      outSlope: -2.8701801
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.22614156
+      value: 0.46738562
+      inSlope: -1.1967659
+      outSlope: -1.1967659
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1.0035496
+      value: 0.0042419434
+      inSlope: -0.2529537
+      outSlope: -0.2529537
+      tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
-  repulsionScale: 0
+    m_RotationOrder: 0
+  repulsionScale: 2
   churn: 1
   apoptosisEffect: {fileID: 198195072401398202, guid: 540c0ea65eb14de46aa5a1478d5a4f3a,
     type: 2}
