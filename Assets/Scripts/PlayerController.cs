@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class PlayerController : MonoBehaviour 
 {
     static public List<CellController> AllCells { get; private set; }
+    static public List<EnemyController> EnemyCells { get; private set; }
 
     [SerializeField] GameObject cellPrefab;
     [SerializeField] GameObject selectoidPrefab;
@@ -22,6 +24,8 @@ public class PlayerController : MonoBehaviour
     {
         AllCells = generateCells();
         cameraTarget = transform.position;
+
+        EnemyCells = GameObject.FindObjectsOfType<EnemyController>().ToList();
     }
 
     List<CellController> generateCells()
