@@ -9,6 +9,12 @@ public class Audio : MonoBehaviour
     void Awake()
     {
         instance = this;
+        
+        if (FindObjectsOfType<Audio>().Length > 1) {
+            Destroy(gameObject);
+        }
+
+        DontDestroyOnLoad(gameObject);
     }
 
     static public void Play(string name)

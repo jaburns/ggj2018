@@ -41,6 +41,9 @@ public class EnemyController : MonoBehaviour {
         collider.radius = collider.radius * Difficulty;
 
         CurrentHealth = TotalHealth = Difficulty * HealthModifier;
+
+        Audio.SetLoopPlaying("menuloop", false);
+        Audio.SetLoopPlaying("levelloop", true);
     }
 
     private void Update()
