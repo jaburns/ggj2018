@@ -36,8 +36,18 @@ public class CellController : MonoBehaviour
 
     Material ogMaterial;
 
+    bool didInit = false;
+
     void Start()
     {
+        init();
+    }
+
+    void init()
+    {
+        if (didInit) return;
+        didInit  = true;
+
         rb = GetComponent<Rigidbody2D>();
         attraction = new List<CellController>(PlayerController.AllCells);
         attraction.Remove(this);
@@ -49,7 +59,6 @@ public class CellController : MonoBehaviour
         ogMaterial = renderer.sharedMaterial;
 
         animRotation = Quaternion.Euler(Random.Range(rotationAmountBase, rotationAmountBase + rotationAmount) * Random.onUnitSphere);
-
         seekPoint = transform.position;
     }
 
@@ -102,9 +111,19 @@ public class CellController : MonoBehaviour
             if(power >= mitosisPowerThreshold)
             {
                 power = 0f;
-                GameObject newCell = GameObject.Instantiate(this.gameObject);
 
-                PlayerController.AllCells.Add(newCell.GetComponent<CellController>());
+                GameObject newCell = GameObject.Instantiate(PlayerController.CellPrefab, transform.position, Quaternion.identity) as GameObject;
+                var cc = newCell.GetComponent<CellController>();
+                cc.init();
+                cc.attraction.Clear();
+                cc.attraction.AddRange(attraction);
+                cc.FindRotoboi();
+                cc.seekPoint = seekPoint;
+                cc.selected = selected;
+
+                cc.GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.blue);
+
+                PlayerController.AllCells.Add(cc);
             }
         }
     }

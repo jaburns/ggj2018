@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float cameraMoveSpeed;
     [SerializeField] int maxCellAttractPairs;
 
+    static public GameObject CellPrefab { get; private set; } 
+
     SelectoidController selectoid;
     Vector2 selectionPtA, selectionPtB;
 
@@ -27,6 +29,7 @@ public class PlayerController : MonoBehaviour
     {
         AllCells = generateCells();
         cameraTarget = transform.position;
+        CellPrefab = cellPrefab;
 
         EnemyCells = GameObject.FindObjectsOfType<EnemyController>().ToList();
 
