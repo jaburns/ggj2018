@@ -98,7 +98,8 @@ public class PlayerController : MonoBehaviour
             selectoid = null;
         }
 
-        if (Input.GetMouseButtonDown(1)) {
+        if (shouldUpdateSelectedCells || Input.GetMouseButtonDown(1)) {
+            shouldUpdateSelectedCells = false;
             updateAttractionListInAllCells();
         }
 
@@ -113,6 +114,8 @@ public class PlayerController : MonoBehaviour
 
         updateCameraPosition();
     }
+
+    static bool shouldUpdateSelectedCells = false;
 
     void updateCameraPosition()
     {
