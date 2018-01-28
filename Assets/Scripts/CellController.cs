@@ -13,6 +13,8 @@ public class CellController : MonoBehaviour
     [SerializeField] float repulsionScale;
     [SerializeField] float churn = 1f;
     [SerializeField] Material selectedMaterial;
+    [SerializeField] float rotationAmountBase;
+    [SerializeField] float rotationAmount;
 
     public List<CellController> attraction { get; set; }
     public bool selected { get; set; }
@@ -29,7 +31,7 @@ public class CellController : MonoBehaviour
     float blobboTimeScale;
     GameObject rotoBoi;
     float rotoBoiSign;
-    float animRotation;
+    Quaternion animRotation;
 
     Material ogMaterial;
 
@@ -51,14 +53,14 @@ public class CellController : MonoBehaviour
         circleCollider = GetComponent<CircleCollider2D>();
         radius = circleCollider.radius;
 
-        animRotation = Random.Range(-10f, 10f);
+        animRotation = Quaternion.Euler(Random.RandomRange(rotationAmountBase, rotationAmountBase + rotationAmount) * Random.onUnitSphere);
     }
 
     void Update()
     {
         float powerModifier = 1f + power / 100f;
 
-        renderer.transform.rotation *= Quaternion.Euler(Vector3.forward * animRotation * Time.deltaTime);
+        renderer.transform.rotation *= animRotation;
         renderer.transform.localScale = new Vector3(
             powerModifier + 0.1f*Mathf.Sin(Time.time*blobboTimeScale),
             powerModifier + 0.1f*Mathf.Cos(Time.time*blobboTimeScale),
@@ -110,7 +112,7 @@ public class CellController : MonoBehaviour
 
     public void FindRotoboi()
     {
-        if (gameObject == null) return;
+        if (this == null) return;
         while (attraction.Remove(null)) { }
 
         rotoBoiSign = Random.value > .5f ? 1f : -1f;
