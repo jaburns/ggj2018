@@ -115,7 +115,7 @@ public class PlayerController : MonoBehaviour
         updateCameraPosition();
     }
 
-    static bool shouldUpdateSelectedCells = false;
+    public static bool shouldUpdateSelectedCells = false;
 
     void updateCameraPosition()
     {
