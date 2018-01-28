@@ -12,12 +12,11 @@ public class CellController : MonoBehaviour
     [SerializeField] AnimationCurve repulsionCurve;
     [SerializeField] float repulsionScale;
     [SerializeField] float churn = 1f;
-    public ParticleSystem explosionEffect;
 
     public List<CellController> attraction { get; set; }
     public bool selected { get; set; }
     public Vector3 seekPoint { get; set; }
-    public ParticleSystem explosionEffect;
+    public ParticleSystem apoptosisEffect;
     public float damageDistance = 3f;
     public float damage = 50f;
     public float damageModifier = 2f;
