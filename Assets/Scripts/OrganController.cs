@@ -11,7 +11,7 @@ public class OrganController : MonoBehaviour
 
     public void GetRekt()
     {
-        Audio.Play("squishBig");
+        Audio.Play("Success");
         Destroy(gameObject);
         FadeCameraController.Win();
     }

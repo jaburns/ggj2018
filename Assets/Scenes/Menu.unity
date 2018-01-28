@@ -1122,26 +1122,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 82551412044510724, guid: ef63f0416bddf5947b3224cfbb78d0cd,
-        type: 2}
-      propertyPath: m_Pitch
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 82118460837241292, guid: ef63f0416bddf5947b3224cfbb78d0cd,
-        type: 2}
-      propertyPath: m_Pitch
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 114156583550608732, guid: ef63f0416bddf5947b3224cfbb78d0cd,
-        type: 2}
-      propertyPath: pitchVariance
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114972344424245978, guid: ef63f0416bddf5947b3224cfbb78d0cd,
-        type: 2}
-      propertyPath: pitchVariance
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ef63f0416bddf5947b3224cfbb78d0cd, type: 2}
   m_IsPrefabParent: 0

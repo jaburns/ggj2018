@@ -36,6 +36,7 @@ public class FadeCameraController : MonoBehaviour
     static public void Lose()
     {
         if (!canDoStuff) return;
+        Audio.Play("Death");
         canDoStuff = false;
         color = Color.black;
         instance.StartCoroutine(fadeOut(() => {
