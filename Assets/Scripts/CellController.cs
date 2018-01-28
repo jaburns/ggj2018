@@ -36,9 +36,6 @@ public class CellController : MonoBehaviour
 
     Material ogMaterial;
 
-    CircleCollider2D circleCollider;
-    private float radius;
-
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -50,9 +47,6 @@ public class CellController : MonoBehaviour
         blobboTimeScale = 5f * Random.Range(.7f, 1.3f);
 
         ogMaterial = renderer.sharedMaterial;
-
-        circleCollider = GetComponent<CircleCollider2D>();
-        radius = circleCollider.radius;
 
         animRotation = Quaternion.Euler(Random.RandomRange(rotationAmountBase, rotationAmountBase + rotationAmount) * Random.onUnitSphere);
     }
@@ -103,16 +97,12 @@ public class CellController : MonoBehaviour
             GameObject.Destroy(collision.gameObject);
             power += powerUpAmount;
 
-            circleCollider.radius = radius * (power / 50f);
-
             if(power >= mitosisPowerThreshold)
             {
                 power = 0f;
                 GameObject newCell = GameObject.Instantiate(this.gameObject);
 
                 PlayerController.AllCells.Add(newCell.GetComponent<CellController>());
-
-                circleCollider.radius = radius;
             }
         }
     }
@@ -147,7 +137,16 @@ public class CellController : MonoBehaviour
             var attraction = attractionCurve.Evaluate(normalizedDist) * attractionScale;
             var repulsion = repulsionCurve.Evaluate(normalizedDist) * repulsionScale;
 
-            rb.AddForce((attraction - repulsion) *  dsNorm);
+            var forceVector = (attraction - repulsion) * dsNorm;
+
+            // TODO why this happen
+            if (float.IsNaN(forceVector.x)
+                || float.IsNaN(forceVector.y)
+                || float.IsNaN(forceVector.z))
+            {
+                continue;
+            }
+            rb.AddForce(forceVector);
         }
 
         var seekVec = seekPoint - transform.position;
