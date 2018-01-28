@@ -12,7 +12,7 @@ public class EnemyController : MonoBehaviour {
     public float Difficulty = 1f;
     public float AggroDistModifier = 10f;
     public float SpeedModifier = 10f;
-    public float DmgDistModifier = 1f;
+    public float DmgDistModifier = 1.5f;
     public float HealthModifier = 100;
 
     private float TotalHealth;
@@ -127,9 +127,9 @@ public class EnemyController : MonoBehaviour {
         dead = true;
         ParticleSystem explosion = GameObject.Instantiate(deathEffect, gameObject.transform.position, Quaternion.Euler(180f, 0f, 0f));
 
-        for (int i = 10; i < TotalHealth; i += 10)
+        for (int i = 5; i < TotalHealth; i += 5)
         {
-            GameObject go = GameObject.Instantiate(CellGuts[(i/10) % CellGuts.Length], gameObject.transform.position, Quaternion.identity);
+            GameObject go = GameObject.Instantiate(CellGuts[(i/5) % CellGuts.Length], gameObject.transform.position, Quaternion.identity);
             go.GetComponent<Rigidbody2D>().AddForce(Quaternion.Euler(i, 0, i) * Vector3.one * 10f, ForceMode2D.Impulse);
         }
 

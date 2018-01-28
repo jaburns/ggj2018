@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour
 
     CameraBounds bounds;
 
+    public int startingCellCount = 5;
+
     void Awake()
     {
         AllCells = generateCells();
@@ -38,7 +40,7 @@ public class PlayerController : MonoBehaviour
 
     List<CellController> generateCells()
     {
-        int count = 100;
+        int count = startingCellCount;
         var basePos = transform.position.WithZ(0);
         var radius = 5f;
         var spawner = FindObjectOfType<CellSpawner>();
